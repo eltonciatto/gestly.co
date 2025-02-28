@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and private routes
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /settings
+
+# Sitemaps
+Sitemap: https://app.gestly.co/sitemap.xml
