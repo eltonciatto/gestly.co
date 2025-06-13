@@ -4,6 +4,9 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Download, Printer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { useRef } from 'react';
 
 interface CommissionReceiptProps {
   businessId: string;
@@ -12,13 +15,14 @@ interface CommissionReceiptProps {
   endDate: string;
 }
 
-export function CommissionReceipt({ 
-  businessId, 
-  attendantId, 
-  startDate, 
-  endDate 
+export function CommissionReceipt({
+  businessId,
+  attendantId,
+  startDate,
+  endDate
 }: CommissionReceiptProps) {
   const supabase = useSupabaseClient();
+  const receiptRef = useRef<HTMLDivElement>(null);
 
   const { data: receipt } = useQuery({
     queryKey: ['commission-receipt', businessId, attendantId, startDate, endDate],
@@ -42,14 +46,23 @@ export function CommissionReceipt({
     window.print();
   };
 
-  const handleDownload = () => {
-    // TODO: Implementar download do PDF
+  const handleDownload = async () => {
+    if (!receiptRef.current) return;
+
+    const canvas = await html2canvas(receiptRef.current);
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`recibo-comissao-${receipt?.receipt_number ?? Date.now()}.pdf`);
   };
 
   if (!receipt) return null;
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
+    <div ref={receiptRef} className="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
       <div className="flex justify-between items-start mb-8">
         <div>
           <h2 className="text-2xl font-bold">Recibo de Comissões</h2>

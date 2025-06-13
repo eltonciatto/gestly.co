@@ -1,4 +1,5 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act } from '../utils';
+import { vi } from 'vitest';
 import { useError } from '@/lib/hooks/use-error';
 import { AppError } from '@/lib/error';
 
@@ -34,7 +35,7 @@ describe('useError', () => {
   });
 
   test('calls onError callback', () => {
-    const onError = jest.fn();
+    const onError = vi.fn();
     const { result } = renderHook(() => useError({ onError }));
     const error = new AppError('Test error');
 

@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { useBusinessQuery } from '@/lib/queries';
 import { getAppointmentsByBusiness } from '@/lib/db/appointments';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
+import { useQuery } from '@/lib/hooks/use-query';
 
 export function AppointmentList() {
   const [search, setSearch] = useState('');
@@ -16,6 +17,7 @@ export function AppointmentList() {
 
   const { data: appointments = [], isLoading } = useQuery({
     queryKey: ['appointments', business?.id, search],
+    queryFn: async () => {
       const { data } = await apiClient.appointments.list({
         search,
         orderBy: 'start_time'

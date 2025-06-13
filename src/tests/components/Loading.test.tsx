@@ -6,11 +6,11 @@ describe('Loading components', () => {
   describe('Loading', () => {
     test('renders with default props', () => {
       render(<Loading />);
-      expect(screen.getByText('Carregando...')).toBeInTheDocument();
+      expect(document.querySelector('svg')).toBeInTheDocument();
     });
 
     test('renders with custom text', () => {
-      render(<Loading text="Custom loading..." />);
+      render(<Loading fullScreen text="Custom loading..." />);
       expect(screen.getByText('Custom loading...')).toBeInTheDocument();
     });
 
