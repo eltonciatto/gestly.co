@@ -1,4 +1,4 @@
-import { render as testingLibraryRender } from '@testing-library/react';
+import { render as testingLibraryRender, renderHook as testingLibraryRenderHook } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from '@/components/ui/toaster';
@@ -20,6 +20,19 @@ export function render(ui: React.ReactElement) {
       </BrowserRouter>
     </QueryClientProvider>
   );
+}
+
+export function renderHook<T>(hook: () => T) {
+  return testingLibraryRenderHook(hook, {
+    wrapper: ({ children }) => (
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          {children}
+          <Toaster />
+        </BrowserRouter>
+      </QueryClientProvider>
+    )
+  });
 }
 
 export * from '@testing-library/react';

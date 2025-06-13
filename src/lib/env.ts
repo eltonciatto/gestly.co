@@ -20,17 +20,19 @@ const envSchema = z.object({
   VITE_GA_ID: z.string().optional()
 }).partial(); // Make all fields optional for development
 
+const defaults = {
+  VITE_APP_URL: 'http://localhost:5173',
+  VITE_API_URL: 'http://localhost:3000/api/v1',
+  VITE_API_KEY: 'development',
+};
+
 function validateEnv() {
+  const envValues = { ...(import.meta.env as Record<string, string>), ...defaults };
   try {
-    return envSchema.parse(import.meta.env);
+    return envSchema.parse(envValues);
   } catch (error) {
     console.error('❌ Environment validation error:', error);
-    // Return default values for development
-    return {
-      VITE_APP_URL: 'http://localhost:5173',
-      VITE_API_URL: 'http://localhost:3000/api',
-      VITE_API_KEY: 'development',
-    };
+    return defaults;
   }
 }
 

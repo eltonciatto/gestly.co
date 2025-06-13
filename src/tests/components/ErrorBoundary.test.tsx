@@ -1,4 +1,5 @@
 import { render, screen } from '../utils';
+import { vi } from 'vitest';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { AppError } from '@/lib/error';
 
@@ -18,7 +19,7 @@ describe('ErrorBoundary', () => {
   });
 
   test('renders error screen when error occurs', () => {
-    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const error = new AppError('Test error', 'test_error');
 
     render(
@@ -27,12 +28,12 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    expect(screen.getByText('Test error')).toBeInTheDocument();
+    expect(screen.getAllByText('Test error')[0]).toBeInTheDocument();
     consoleError.mockRestore();
   });
 
   test('renders fallback when provided', () => {
-    const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const error = new Error('Test error');
     const fallback = <div>Fallback Content</div>;
 

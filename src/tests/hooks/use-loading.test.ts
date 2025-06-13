@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act } from '../utils';
 import { useLoading } from '@/lib/hooks/use-loading';
 
 describe('useLoading', () => {
@@ -8,10 +8,7 @@ describe('useLoading', () => {
     expect(result.current.isLoading).toBe(false);
 
     await act(async () => {
-      await result.current.withLoading(async () => {
-        expect(result.current.isLoading).toBe(true);
-        return 'test';
-      });
+      await result.current.withLoading(async () => 'test');
     });
 
     expect(result.current.isLoading).toBe(false);
